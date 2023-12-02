@@ -1,6 +1,6 @@
 # Helpful documentation: https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/rust.section.md
 { lib, stdenv, installShellFiles, rustPlatform, libiconv, Security
-, SystemConfiguration, AppKit, cmake, pkg-config, fontconfig, android-tools, gcc
+, SystemConfiguration, AppKit, cmake, pkg-config, fontconfig, android-tools, libgcc
 , glibc, mold, libclang, libcxx, binutils }:
 rustPlatform.buildRustPackage {
   name = "uad";
@@ -24,20 +24,18 @@ rustPlatform.buildRustPackage {
     glibc
     android-tools
     stdenv.cc.cc.lib
-    gcc
+    libgcc
     libcxx
   ];
 
   buildInputs = [
     fontconfig
-    gcc
     android-tools
     stdenv.cc.cc.lib
     glibc
     mold
     libclang
-    gcc
-    libcxx
+    libgcc
   ] ++ lib.optionals stdenv.isDarwin [
     libiconv
     Security
