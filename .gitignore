@@ -3,3 +3,4 @@ target/
 *.log
 .direnv
 .envrc
+result
