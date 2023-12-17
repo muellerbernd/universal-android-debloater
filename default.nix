@@ -12,10 +12,21 @@ rustPlatform.buildRustPackage rec {
     allowBuiltinFetchGit = true;
   };
 
-  nativeBuildInputs = [ cmake pkg-config ];
+  nativeBuildInputs = [
+    installShellFiles
+    cmake
+    pkg-config
+    clang
+    mold
+    pkg-config
+    fontconfig
+    # gcc_multi
+    binutils
+  ];
 
   buildInputs = [ clang mold pkg-config fontconfig gcc_multi binutils ];
 
+  doCheck = false; # No tests
   meta = with lib; {
     description = "uad";
     homepage = "";
