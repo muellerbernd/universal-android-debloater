@@ -1,6 +1,6 @@
 # Helpful documentation: https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/rust.section.md
 { lib, stdenv, installShellFiles, rustPlatform, cmake, pkg-config, fontconfig
-, android-tools, mold, clang, gcc_multi, binutils }:
+, android-tools, mold, clang, gcc_multi, binutils, freetype }:
 rustPlatform.buildRustPackage rec {
   name = "uad";
 
@@ -22,6 +22,7 @@ rustPlatform.buildRustPackage rec {
     fontconfig
     # gcc_multi
     binutils
+    freetype
   ];
 
   buildInputs = [ clang mold pkg-config fontconfig gcc_multi binutils ];
