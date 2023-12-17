@@ -14,18 +14,9 @@
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.outputs.legacyPackages.${system};
       in {
-        packages.uad = pkgs.callPackage ./uad.nix {
-          inherit (pkgs.darwin.apple_sdk.frameworks)
-            Security SystemConfiguration AppKit;
-        };
-        packages.default = self.outputs.packages.${system}.uad;
+        packages.default = pkgs.callPackage ./. { };
+        devShells.default = import ./shell.nix { inherit pkgs; };
 
-        devShells.default = self.packages.${system}.default.overrideAttrs
-          (super: {
-            nativeBuildInputs = with pkgs;
-              super.nativeBuildInputs ++ [ cargo-edit clippy rustfmt ];
-            RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
-          });
       }) // {
         overlays.default = final: prev: {
           inherit (self.packages.${final.system}) uad;
