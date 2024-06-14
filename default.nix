@@ -1,6 +1,22 @@
 # Helpful documentation: https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/rust.section.md
-{ lib, stdenv, installShellFiles, rustPlatform, cmake, pkg-config, fontconfig
-, android-tools, mold, clang, gcc_multi, binutils, freetype }:
+{
+  lib,
+  stdenv,
+  rustPlatform,
+  cmake,
+  pkg-config,
+  fontconfig,
+  mold,
+  freetype,
+  autoPatchelfHook,
+  makeWrapper,
+  xorg,
+  wayland,
+  wayland-protocols,
+  vulkan-loader,
+  vulkan-tools,
+  clang,
+}:
 rustPlatform.buildRustPackage rec {
   name = "uad";
 
@@ -13,19 +29,35 @@ rustPlatform.buildRustPackage rec {
   };
 
   nativeBuildInputs = [
-    installShellFiles
     cmake
+    makeWrapper
+    autoPatchelfHook
     pkg-config
-    clang
     mold
-    pkg-config
-    fontconfig
-    # gcc_multi
-    binutils
-    freetype
+    clang
   ];
 
-  buildInputs = [ clang mold pkg-config fontconfig gcc_multi binutils ];
+  buildInputs = [
+    fontconfig
+    freetype
+    stdenv.cc.cc.lib # libstdc++.so libgcc_s.so
+    xorg.libX11
+    xorg.libXcursor
+    xorg.libXrandr
+    xorg.libXi
+    wayland
+    wayland-protocols
+    vulkan-loader
+    vulkan-tools
+  ];
+
+  LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${lib.makeLibraryPath buildInputs}";
+
+  # postFixup = ''
+  #   patchelf \
+  #       --add-needed ${freetype}/lib/libfreetype.so \
+  #       $out/bin/uad_gui
+  # '';
 
   doCheck = false; # No tests
   meta = with lib; {
